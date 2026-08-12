@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrendScope - GitHub 技术趋势雷达</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">◉</span>
+      <h1>TrendScope</h1>
+      <span class="brand-sub">GitHub 技术趋势雷达</span>
+    </div>
+    <nav class="window-tabs" id="windowTabs" aria-label="时间窗口">
+      <button class="tab active" data-window="day">日</button>
+      <button class="tab" data-window="week">周</button>
+      <button class="tab" data-window="month">月</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="meta-bar" id="metaBar" hidden>
+      <span class="meta-item">快照时间: <strong id="snapshotAt">-</strong></span>
+      <span class="meta-item">数据更新: <strong id="requestedAt">-</strong></span>
+    </section>
+
+    <section class="grid">
+      <article class="card radar-card">
+        <header class="card-header">
+          <h2>语言趋势雷达</h2>
+          <span class="hint">按各语言仓库星标总量加权</span>
+        </header>
+        <div class="radar-wrap" id="radarChart" role="img" aria-label="语言趋势雷达图"></div>
+      </article>
+
+      <article class="card repos-card">
+        <header class="card-header">
+          <h2>热门仓库榜</h2>
+          <span class="hint">按星标数排序</span>
+        </header>
+        <ol class="repo-list" id="repoList"></ol>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <template id="repoItemTpl">
+    <li class="repo-item">
+      <span class="repo-rank"></span>
+      <div class="repo-main">
+        <a class="repo-name" target="_blank" rel="noopener"></a>
+        <p class="repo-desc"></p>
+        <div class="repo-meta">
+          <span class="lang-tag"></span>
+          <span class="repo-stars">★ <b></b></span>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+# Render Blueprint:免费 Web Service 部署 TrendScope
+# 文档: https://render.com/docs/blueprint-spec
+#
+# 限制(免费档):
+# - 无持久盘:休眠/重启后 SQLite 清空,唤醒后由 ingest 重新抓取
+# - 15 分钟无流量会休眠,首次访问约 30~60 秒冷启动
+# - 无独立 Background Worker,API 与 ingest 同容器启动
+
+services:
+  - type: web
+    name: trendscope
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - key: TRENDSCOPE_DB
+        value: /data/trendscope.db
+      - key: TRENDSCOPE_INTERVAL
+        value: 1h
+      - key: GITHUB_TOKEN
+        sync: false # 在 Dashboard 手动填入,勿提交到仓库

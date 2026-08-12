@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (Go)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache-dependency-path: backend/go.sum
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go test
+        run: go test ./... -count=1
+
+      - name: go build
+        run: go build ./...
+
+  frontend:
+    name: Frontend checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate frontend files exist
+        run: |
+          test -f frontend/index.html
+          test -f frontend/css/style.css
+          test -f frontend/js/app.js
+
+      - name: Sync check (frontend matches embedded public)
+        run: |
+          diff -r frontend backend/cmd/api/public || \
+            { echo "frontend/ 与 backend/cmd/api/public/ 不一致,请同步后提交"; exit 1; }

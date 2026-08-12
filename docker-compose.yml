@@ -1,0 +1,32 @@
+services:
+  trendscope:
+    build: .
+    container_name: trendscope
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      TRENDSCOPE_DB: /data/trendscope.db
+      # 可选:GITHUB_TOKEN 提升 API 配额(5000 次/小时)
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      TRENDSCOPE_INTERVAL: ${TRENDSCOPE_INTERVAL:-1h}
+    volumes:
+      - trendscope-data:/data
+
+  # 定时抓取服务:与 API 共用数据卷,周期性抓取 GitHub 数据
+  ingest:
+    build: .
+    container_name: trendscope-ingest
+    restart: unless-stopped
+    command: ["trendscope-ingest"]
+    environment:
+      TRENDSCOPE_DB: /data/trendscope.db
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      TRENDSCOPE_INTERVAL: ${TRENDSCOPE_INTERVAL:-1h}
+    volumes:
+      - trendscope-data:/data
+    depends_on:
+      - trendscope
+
+volumes:
+  trendscope-data:
