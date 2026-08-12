@@ -4,7 +4,6 @@ services:
     container_name: trendscope
     restart: unless-stopped
     # 本机 Compose:只跑 API;抓取由下方 ingest 服务负责
-    # (Dockerfile 默认 CMD 是 render-start.sh,用于 Render 单容器部署)
     command: ["trendscope-api"]
     ports:
       - "8080:8080"
