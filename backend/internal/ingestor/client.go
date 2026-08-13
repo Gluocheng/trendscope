@@ -60,7 +60,7 @@ func NewClient(token string) *Client {
 	}
 }
 
-// SearchRepos 搜索给定窗口内创建的热门仓库,返回按星标降序的列表。
+// SearchRepos 搜索给定窗口内有更新、且达到最低星标的热门仓库,按星标降序返回。
 // perPage 为每页数量,最多拉取 maxPages 页。
 func (c *Client) SearchRepos(ctx context.Context, w model.Window, language string, perPage, maxPages int) ([]model.Repo, error) {
 	if perPage <= 0 {
@@ -70,8 +70,8 @@ func (c *Client) SearchRepos(ctx context.Context, w model.Window, language strin
 		maxPages = 1
 	}
 
-	createdSince := time.Now().UTC().Add(-w.Durations())
-	query := fmt.Sprintf("created:>%s language:%s", createdSince.Format("2006-01-02"), language)
+	pushedSince := time.Now().UTC().Add(-w.Durations())
+	query := fmt.Sprintf("pushed:>%s stars:>50 language:%s", pushedSince.Format("2006-01-02"), language)
 
 	var repos []model.Repo
 	for page := 1; page <= maxPages; page++ {

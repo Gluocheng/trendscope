@@ -96,8 +96,11 @@ func TestSearchRepos(t *testing.T) {
 	if !strings.Contains(gotQuery, "language:Go") {
 		t.Errorf("query missing language filter: %q", gotQuery)
 	}
-	if !strings.Contains(gotQuery, "created:>") {
-		t.Errorf("query missing created filter: %q", gotQuery)
+	if !strings.Contains(gotQuery, "pushed:>") {
+		t.Errorf("query missing pushed filter: %q", gotQuery)
+	}
+	if !strings.Contains(gotQuery, "stars:>50") {
+		t.Errorf("query missing stars filter: %q", gotQuery)
 	}
 }
 
@@ -119,8 +122,7 @@ func TestSearchReposServerErrorRetries(t *testing.T) {
 		userAgent: "TrendScope/0.1",
 		baseURL:   ts.URL,
 	}
-	// 用一个月窗口,created 过滤无影响,专注重试逻辑。
-	// 这里直接把 SearchRepos 的 created 时间戳无关紧要,重试在 fetchPage 内部。
+	// 窗口过滤不影响重试逻辑,重试发生在 fetchPage 内部。
 	_, err := c.SearchRepos(context.Background(), model.WindowDay, "Go", 5, 1)
 	if err != nil {
 		t.Fatalf("search after retry: %v", err)
